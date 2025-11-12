@@ -48,7 +48,7 @@ public class HashTable<K, V> implements Map<K, V> {
     @Override
     public V get(Object key) {
         int i = 0;
-        int startBucket = key.hashCode();
+        int startBucket = key.hashCode()%capacity;
         int j = quadraticProbe(startBucket, i);
         K maybeK = ((MapEntry<K,V>) array[j]).getKey();
         
@@ -57,7 +57,8 @@ public class HashTable<K, V> implements Map<K, V> {
             j = quadraticProbe(startBucket, i);
             maybeK = ((MapEntry<K,V>) array[j]).getKey();
         }
-        return ((MapEntry<K,V>) array[j]).getValue();
+        if(!deleted[i]){return ((MapEntry<K,V>) array[j]).getValue();}
+        else return null;
     }
 
     @Override
