@@ -1,31 +1,48 @@
 package assign09;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HashTable<K, V> implements Map<K, V> {
+    private Object[] array = new Object[10];
+    private boolean[] deleted = new boolean[10];
+    private int size = 0;
+    private int capacity = 10;
+
+    private int getIndexFromKey(K key){
+        int hashCode = key.hashCode();
+        return Math.abs(hashCode) % capacity;
+    }
 
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clear'");
+        for (int i = 0; i < array.length; i++){
+            array[i] = null;
+        }
     }
 
     @Override
-    public boolean containsKey(Object key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'containsKey'");
+    public boolean containsKey(K key) {
+        return !deleted[key.hashCode() % capacity];
     }
 
     @Override
-    public boolean containsValue(Object value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'containsValue'");
+    public boolean containsValue(V value) {
+        for (int i = 0; i < array.length; i++){
+            if (((MapEntry<K, V>) array[i]).getValue().equals(value)) return true;
+        }
+        return false;
     }
 
     @Override
     public List<MapEntry<K, V>> entries() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'entries'");
+        List<MapEntry<K, V>> list = new ArrayList<>();
+        for (int i = 0; i < array.length; i++){
+            if (!deleted[i]) {
+                list.add((MapEntry<K, V>) array[i]);
+            }
+        }
+        return list;
     }
 
     @Override
@@ -36,14 +53,30 @@ public class HashTable<K, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
+        return size == 0;
     }
 
     @Override
-    public V put(Object key, Object value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'put'");
+    public V put(K key, V value) {
+        MapEntry<K, V> entry = new MapEntry<K, V>(key, value);
+        V returnedValue = null;
+        int index = getIndexFromKey(key);
+        int adjustmentCount = 0;
+
+        while (array[index] != null && !deleted[index]){
+            MapEntry<K, V> checkingEntry = (MapEntry<K, V>) array[index];
+            if (checkingEntry != null && checkingEntry.getKey().equals(key)){
+                returnedValue = checkingEntry.getValue();
+                break;
+            }
+
+            adjustmentCount++;
+            index = (getIndexFromKey(key) + (int) Math.pow(adjustmentCount, 2)) % capacity;
+        }
+
+        array[index] = entry;
+        deleted[index] = false;
+        return returnedValue;
     }
 
     @Override
@@ -54,7 +87,6 @@ public class HashTable<K, V> implements Map<K, V> {
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'size'");
+        return size;
     }
 }
