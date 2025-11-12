@@ -8,11 +8,7 @@ public class HashTable<K, V> implements Map<K, V> {
     private boolean[] deleted = new boolean[11];
     private int size = 0;
     private int capacity = 11;
-
-    private int getIndexFromKey(K key){
-        int hashCode = key.hashCode();
-        return Math.abs(hashCode) % capacity;
-    }
+    private double loadThreshold = 0.5;
 
     @Override
     public void clear() {
@@ -70,8 +66,8 @@ public class HashTable<K, V> implements Map<K, V> {
     public V put(K key, V value) {
         MapEntry<K, V> entry = new MapEntry<K, V>(key, value);
         V returnedValue = null;
-        int index = getIndexFromKey(key);
-        int adjustmentCount = 0;
+        int steps = 0;
+        int index = quadraticProbe(key.hashCode(), steps);
 
         while (array[index] != null && !deleted[index]){
             MapEntry<K, V> checkingEntry = (MapEntry<K, V>) array[index];
@@ -80,12 +76,14 @@ public class HashTable<K, V> implements Map<K, V> {
                 break;
             }
 
-            adjustmentCount++;
-            index = (getIndexFromKey(key) + (int) Math.pow(adjustmentCount, 2)) % capacity;
+            steps++;
+            index = quadraticProbe(key.hashCode(), steps);
         }
 
         array[index] = entry;
         deleted[index] = false;
+        if (returnedValue == null) size++;
+
         return returnedValue;
     }
 
@@ -104,4 +102,40 @@ public class HashTable<K, V> implements Map<K, V> {
         return (start + i * i) % capacity;
     }
 
+    private double calculateLoadFactor(){
+        return size / capacity;
+    }
+
+    private void resizeBackingArray(){
+        int newCapacity = calculateNextCapacity();
+        Object[] newArray = new Object[newCapacity];
+        Object[] currentArray = array;
+
+        array = newArray;
+        for (Object entryObject : currentArray){
+            MapEntry<K, V> entry = (MapEntry<K, V>) entryObject;
+            put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private int calculateNextCapacity(){
+        int number = size * 2;
+        boolean found = false;
+
+        while (!found){
+            number++;
+            if (isPrime(number)) found = true;
+        }
+
+        return number;
+    }
+
+    private boolean isPrime(int num){
+        if (num % 2 == 0 || num % 3 == 0) return false;
+
+        for (int i = 5; i * i <= num; i = i + 6) 
+            if (num % i == 0 || num % (i + 2) == 0) return false; 
+        
+        return true; 
+    }
 }
