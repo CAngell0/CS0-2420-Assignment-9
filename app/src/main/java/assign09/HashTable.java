@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HashTable<K, V> implements Map<K, V> {
-    private Object[] array = new Object[10];
-    private boolean[] deleted = new boolean[10];
+    private Object[] array = new Object[11];
+    private boolean[] deleted = new boolean[11];
     private int size = 0;
-    private int capacity = 10;
+    private int capacity = 11;
 
     private int getIndexFromKey(K key){
         int hashCode = key.hashCode();
@@ -16,9 +16,9 @@ public class HashTable<K, V> implements Map<K, V> {
 
     @Override
     public void clear() {
-        for (int i = 0; i < array.length; i++){
-            array[i] = null;
-        }
+        array = new Object[capacity];
+        deleted = new boolean[capacity];
+        size = 0;
     }
 
     @Override
@@ -47,8 +47,17 @@ public class HashTable<K, V> implements Map<K, V> {
 
     @Override
     public V get(Object key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        int i = 0;
+        int startBucket = key.hashCode();
+        int j = quadraticProbe(startBucket, i);
+        K maybeK = ((MapEntry<K,V>) array[j]).getKey();
+        
+        while(!maybeK.equals(key)){
+            i++;
+            j = quadraticProbe(startBucket, i);
+            maybeK = ((MapEntry<K,V>) array[j]).getKey();
+        }
+        return ((MapEntry<K,V>) array[j]).getValue();
     }
 
     @Override
@@ -89,4 +98,9 @@ public class HashTable<K, V> implements Map<K, V> {
     public int size() {
         return size;
     }
+
+    private int quadraticProbe(int start, int i){
+        return (start + i * i) % capacity;
+    }
+
 }
