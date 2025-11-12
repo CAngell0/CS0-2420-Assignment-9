@@ -1,5 +1,7 @@
 package assign09;
 
+import java.util.Hashtable;
+
 /**
  * Demonstratation of how to use a hash table to store key-value pairs.
  *
