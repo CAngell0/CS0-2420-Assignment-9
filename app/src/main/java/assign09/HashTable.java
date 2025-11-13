@@ -17,7 +17,6 @@ public class HashTable<K, V> implements Map<K, V> {
         size = 0;
     }
 
-    // TODO: doesnt check the next buckets using probing
     @Override
     public boolean containsKey(K key) {
         int startIndex = homeIndex(key);
@@ -42,12 +41,13 @@ public class HashTable<K, V> implements Map<K, V> {
 
     }
 
-    // TODO: skip deleted entries
     @Override
     public boolean containsValue(V value) {
         for (int i = 0; i < array.length; i++) {
-            if (((MapEntry<K, V>) array[i]).getValue().equals(value))
+            if(!deleted[i] && array[i] != null){
+                if (((MapEntry<K, V>) array[i]).getValue().equals(value))
                 return true;
+            }
         }
         return false;
     }
