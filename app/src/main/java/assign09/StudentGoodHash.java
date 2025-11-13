@@ -6,8 +6,8 @@ import java.text.DecimalFormat;
  * Representation for a University of Utah student.
  *
  * @implNote The hashCode method is overridden with a valid hash function for
- * this student, but one that does a poor job of distributing students in a hash
- * table.
+ * this student, but one that does a hopefully awesome job of distributing students in a hash
+ * table. It depends on if uid is unique.
  *
  * @author CS 2420 course staff and Joshua Varughese and Carson Angell
  * @version 11/12/25
@@ -81,6 +81,9 @@ public class StudentGoodHash {
     return firstName + " " + lastName + " (u" + formatter.format(uid) + ")";
   }
 
+  /**
+   * Returns the students unique uid
+   */
   public int hashCode() {
     return this.uid;
   }
