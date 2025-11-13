@@ -12,11 +12,11 @@ import java.text.DecimalFormat;
  * @author CS 2420 course staff and Joshua Varughese and Carson Angell
  * @version 11/12/25
  */
-public class StudentBadHash {
+public class StudentMediumHash {
 
   private int uid;
   private String firstName;
-  String lastName;
+  private String lastName;
 
   /**
    * Create a new student with the given uid, firstName, and lastName.
@@ -25,7 +25,7 @@ public class StudentBadHash {
    * @param firstName
    * @param lastName
    */
-  public StudentBadHash(int uid, String firstName, String lastName) {
+  public StudentMediumHash(int uid, String firstName, String lastName) {
     this.uid = uid;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -60,9 +60,9 @@ public class StudentBadHash {
    */
   public boolean equals(Object other) {
     // change to StudentMediumHash and StudentGoodHash for two new classes
-    if (!(other instanceof StudentBadHash)) return false;
+    if (!(other instanceof StudentMediumHash)) return false;
 
-    StudentBadHash rhs = (StudentBadHash) other;
+    StudentMediumHash rhs = (StudentMediumHash) other;
 
     return (
       this.uid == rhs.uid &&
@@ -82,6 +82,7 @@ public class StudentBadHash {
   }
 
   public int hashCode() {
-    return this.getFirstName().hashCode();
+    String fullName = this.getFirstName() + this.getLastName();
+    return fullName.hashCode();
   }
 }

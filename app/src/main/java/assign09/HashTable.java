@@ -21,7 +21,7 @@ public class HashTable<K, V> implements Map<K, V> {
     public boolean containsKey(K key) {
         int i = 0;
 
-        while (true) {
+        while (i < capacity) {
             int j = calcIndex(key, i);
             Object curr = array[j];
 
@@ -38,7 +38,7 @@ public class HashTable<K, V> implements Map<K, V> {
             }
             i++;
         }
-
+        return false;
     }
 
     @Override
@@ -63,13 +63,11 @@ public class HashTable<K, V> implements Map<K, V> {
         return list;
     }
 
-    // TODO:bail when hitting a empty array slot and handle tombstones(deleted ==
-    // true)
     @Override
     public V get(Object key) {
         int i = 0;
 
-        while (true) {
+        while (i < capacity) {
             int j = calcIndex(key, i);
             Object curr = array[j];
 
@@ -86,6 +84,7 @@ public class HashTable<K, V> implements Map<K, V> {
             }
             i++;
         }
+        return null;
     }
 
     @Override
@@ -93,7 +92,6 @@ public class HashTable<K, V> implements Map<K, V> {
         return size == 0;
     }
 
-    // TODO:resized if threshold hits loadThreshold fix tombstone handling
     @Override
     public V put(K key, V value) {
         if (calculateLoadFactor() >= loadThreshold) {
@@ -141,25 +139,29 @@ public class HashTable<K, V> implements Map<K, V> {
         return null;
     }
 
-    @Override
     public V remove(Object key) {
-        int step = 0;
-        int index = calcIndex(key, step);
+        int i = 0;
 
-        MapEntry<K, V> current = toEntry(array[index]);
+        while (i < capacity) {
+            int j = calcIndex(key, i);
+            Object curr = array[j];
 
-        while (current != null && step < capacity){
-            if (current.getKey().equals(key)){
-                if (deleted[index]) return null;
-
-                deleted[index] = true;
-                size--;
-                return current.getValue();
+            // empty and not tombstone
+            if (curr == null && !deleted[j]) {
+                return null;
             }
 
-            step++;
-            index = calcIndex(key, step);
-            current = toEntry(array[index]);
+            if (curr != null && !deleted[j]) {
+                MapEntry<K, V> entry = toEntry(curr);
+                if (entry.getKey().equals(key)) {
+                    deleted[j] = true;
+                    size--;
+                    return entry.getValue();
+                }
+            }
+
+            // if tombstone keep probing
+            i++;
         }
 
         return null;
@@ -171,17 +173,15 @@ public class HashTable<K, V> implements Map<K, V> {
     }
 
     @SuppressWarnings("unchecked")
-    private MapEntry<K, V> toEntry(Object entry){
+    private MapEntry<K, V> toEntry(Object entry) {
         return (MapEntry<K, V>) entry;
     }
-
-
 
     private double calculateLoadFactor() {
         return (double) size / capacity;
     }
 
-    private int calcIndex(Object key, int step){
+    private int calcIndex(Object key, int step) {
         int start = Math.abs(key.hashCode()) % capacity;
         return (start + (step * step)) % capacity;
     }
@@ -198,6 +198,7 @@ public class HashTable<K, V> implements Map<K, V> {
 
         return number;
     }
+
     private boolean isPrime(int num) {
         if (num % 2 == 0 || num % 3 == 0)
             return false;
@@ -212,21 +213,21 @@ public class HashTable<K, V> implements Map<K, V> {
     private void resizeBackingArray() {
         int newCapacity = calculateNextCapacity();
         capacity = newCapacity;
-        
-        Object[] newArray = new Object[newCapacity];
-        Object[] currentArray = array;
 
-        int oldSize = size;
+        Object[] oldArr = array;
+        boolean[] oldDeleted = deleted;
+        
+        array = new Object[capacity];
+        deleted = new boolean[capacity];
+        // put corrects the size;
         size = 0;
 
-        array = newArray;
-        for (Object entryObject : currentArray) {
-            if (entryObject == null) continue;
-
-            MapEntry<K, V> entry = toEntry(entryObject);
-            put(entry.getKey(), entry.getValue());
+        for (int i = 0; i < oldArr.length; i++) {
+            if (oldArr[i] != null && !oldDeleted[i]) {
+                MapEntry<K, V> entry = toEntry(oldArr[i]);
+                put(entry.getKey(), entry.getValue());
+            }
         }
 
-        size = oldSize;
     }
 }
