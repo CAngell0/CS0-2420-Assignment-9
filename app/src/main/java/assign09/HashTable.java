@@ -64,7 +64,7 @@ public class HashTable<K, V> implements Map<K, V> {
     }
 
     @Override
-    public V get(Object key) {
+    public V get(K key) {
         int i = 0;
 
         while (i < capacity) {
@@ -139,7 +139,7 @@ public class HashTable<K, V> implements Map<K, V> {
         return null;
     }
 
-    public V remove(Object key) {
+    public V remove(K key) {
         int i = 0;
 
         while (i < capacity) {
