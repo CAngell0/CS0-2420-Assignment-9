@@ -37,6 +37,7 @@ public class HashTable<K, V> implements Map<K, V> {
                     return true;
                 }
             }
+            i++;
         }
 
     }
@@ -44,9 +45,9 @@ public class HashTable<K, V> implements Map<K, V> {
     @Override
     public boolean containsValue(V value) {
         for (int i = 0; i < array.length; i++) {
-            if(!deleted[i] && array[i] != null){
+            if (!deleted[i] && array[i] != null) {
                 if (((MapEntry<K, V>) array[i]).getValue().equals(value))
-                return true;
+                    return true;
             }
         }
         return false;
@@ -56,7 +57,7 @@ public class HashTable<K, V> implements Map<K, V> {
     public List<MapEntry<K, V>> entries() {
         List<MapEntry<K, V>> list = new ArrayList<>();
         for (int i = 0; i < array.length; i++) {
-            if (!deleted[i]) {
+            if (!deleted[i] && array[i] != null) {
                 list.add((MapEntry<K, V>) array[i]);
             }
         }
@@ -67,20 +68,26 @@ public class HashTable<K, V> implements Map<K, V> {
     // true)
     @Override
     public V get(Object key) {
+        int startIndex = homeIndex(key);
         int i = 0;
-        int startBucket = homeIndex(key);
-        int j = quadraticProbe(startBucket, i);
-        K maybeK = ((MapEntry<K, V>) array[j]).getKey();
 
-        while (!maybeK.equals(key)) {
+        while (true) {
+            int j = quadraticProbe(startIndex, i);
+            Object curr = array[j];
+
+            // key not in table
+            if (curr == null && !deleted[j]) {
+                return null;
+            }
+
+            if (curr != null && !deleted[j]) {
+                MapEntry<K, V> entry = (MapEntry<K, V>) curr;
+                if (entry.getKey().equals(key)) {
+                    return entry.getValue();
+                }
+            }
             i++;
-            j = quadraticProbe(startBucket, i);
-            maybeK = ((MapEntry<K, V>) array[j]).getKey();
         }
-        if (!deleted[j]) {
-            return ((MapEntry<K, V>) array[j]).getValue();
-        } else
-            return null;
     }
 
     @Override
@@ -91,29 +98,50 @@ public class HashTable<K, V> implements Map<K, V> {
     // TODO:resized if threshold hits loadThreshold fix tombstone handling
     @Override
     public V put(K key, V value) {
-        MapEntry<K, V> entry = new MapEntry<K, V>(key, value);
-        V returnedValue = null;
-        int steps = 0;
-        int startIndex = homeIndex(key);
-        int index = homeIndex(key);
-
-        while (array[index] != null && !deleted[index]) {
-            MapEntry<K, V> checkingEntry = (MapEntry<K, V>) array[index];
-            if (checkingEntry != null && checkingEntry.getKey().equals(key)) {
-                returnedValue = checkingEntry.getValue();
-                break;
-            }
-
-            steps++;
-            index = quadraticProbe(startIndex, steps);
+        if (calculateLoadFactor() >= loadThreshold) {
+            resizeBackingArray();
         }
 
-        array[index] = entry;
-        deleted[index] = false;
-        if (returnedValue == null)
-            size++;
+        MapEntry<K, V> toBePut = new MapEntry<>(key, value);
 
-        return returnedValue;
+        int startIndex = homeIndex(key);
+        int firstTombstone = -1;
+        int i = 0;
+
+        while (i < capacity) {
+            int j = quadraticProbe(startIndex, i);
+            Object curr = array[j];
+
+            // empty spot at curr
+            if (curr == null) {
+                // insert at j or at first tombstone found
+                int insertIndex = (firstTombstone != -1) ? firstTombstone : j;
+
+                array[insertIndex] = toBePut;
+                deleted[insertIndex] = false;
+                size++;
+                return null;
+            }
+
+            // spot used before
+            if (!deleted[j]) {
+                MapEntry<K, V> entry = (MapEntry<K, V>) curr;
+                if (entry.getKey().equals(key)) {
+                    V toReturn = entry.getValue();
+                    array[j] = toBePut;
+                    return toReturn;
+                }
+                // else not same key keep probing
+
+            } else {
+                // if first tombstone remember for when we hit an empty spot
+                if (firstTombstone == -1) {
+                    firstTombstone = j;
+                }
+            }
+            i++;
+        }
+        return null;
     }
 
     @Override
