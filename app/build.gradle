@@ -37,6 +37,12 @@ application {
     mainClass = 'assignment.App'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'timing.StudentBadHashTimingExperiment'
+    }
+}
+
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()

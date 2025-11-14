@@ -225,10 +225,6 @@ public class HashTable<K, V> implements Map<K, V> {
         return (MapEntry<K, V>) entry;
     }
 
-    /**
-     * A helper method that calculates the load factor of the data structure with its durrent data.
-     * @return The load factor: size / capacity
-     */
     private double calculateLoadFactor() {
         return (double) size / capacity;
     }

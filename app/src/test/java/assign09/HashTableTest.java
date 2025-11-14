@@ -98,9 +98,9 @@ public class HashTableTest {
         table.put("b", 3);
         table.put("c", 28);
 
-        assertEquals(1, table.get("a"));
-        assertEquals(2, table.get("b"));
-        assertEquals(3, table.get("c"));
+        assertEquals(10, table.get("a"));
+        assertEquals(3, table.get("b"));
+        assertEquals(28, table.get("c"));
     }
     
     @Test
