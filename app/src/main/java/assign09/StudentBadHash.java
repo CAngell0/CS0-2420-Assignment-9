@@ -6,8 +6,9 @@ import java.text.DecimalFormat;
  * Representation for a University of Utah student.
  *
  * @implNote The hashCode method is overridden with a valid hash function for
- * this student, but one that does a poor job of distributing students in a hash
- * table.
+ *           this student, but one that does a poor job of distributing students
+ *           in a hash
+ *           table.
  *
  * @author CS 2420 course staff and Joshua Varughese and Carson Angell
  * @version 11/12/25
@@ -56,19 +57,19 @@ public class StudentBadHash {
   /**
    * Determine whether this student is equal to a given object.
    *
-   * @return true if other is a student with the same UID, first name, and last name; otherwise false
+   * @return true if other is a student with the same UID, first name, and last
+   *         name; otherwise false
    */
   public boolean equals(Object other) {
     // change to StudentMediumHash and StudentGoodHash for two new classes
-    if (!(other instanceof StudentBadHash)) return false;
+    if (!(other instanceof StudentBadHash))
+      return false;
 
     StudentBadHash rhs = (StudentBadHash) other;
 
-    return (
-      this.uid == rhs.uid &&
-      this.firstName.equals(rhs.firstName) &&
-      this.lastName.equals(rhs.lastName)
-    );
+    return (this.uid == rhs.uid &&
+        this.firstName.equals(rhs.firstName) &&
+        this.lastName.equals(rhs.lastName));
   }
 
   /**
@@ -80,6 +81,7 @@ public class StudentBadHash {
     DecimalFormat formatter = new DecimalFormat("0000000");
     return firstName + " " + lastName + " (u" + formatter.format(uid) + ")";
   }
+
   /**
    * Hashes the students first name
    */

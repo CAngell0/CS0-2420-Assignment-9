@@ -1,4 +1,4 @@
-package assign09;   
+package assign09;
 
 /**
  * Demonstratation of how to use a hash table to store key-value pairs.

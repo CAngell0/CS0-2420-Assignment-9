@@ -6,7 +6,8 @@ import java.util.List;
  * Interface represention of a map of keys to values. Duplicate keys
  * are not permitted and each has an associated value.
  *
- * @implNote All time-complexity expectations are for a quadratic-probing hash table.
+ * @implNote All time-complexity expectations are for a quadratic-probing hash
+ *           table.
  *
  * @author CS 2420 course staff
  * @version 2025-11-06
@@ -80,7 +81,7 @@ public interface Map<K, V> {
    *
    * @implSpec Expected time-complexity: O(1)
    *
-   * @param key - the key for the map entry
+   * @param key   - the key for the map entry
    * @param value - the value for the map entry
    * @return the previous associated value if key is found; otherwise null
    */

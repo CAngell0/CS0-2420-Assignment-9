@@ -17,7 +17,7 @@ public class MapEntry<K, V> {
   /**
    * Create a new MapEntry with the given key and value.
    *
-   * @param key - the key of the new map entry
+   * @param key   - the key of the new map entry
    * @param value - the value of the new map entry
    */
   public MapEntry(K key, V value) {
@@ -59,7 +59,8 @@ public class MapEntry<K, V> {
    * @return true if the key and value are equal; false otherwise
    */
   public boolean equals(Object other) {
-    if (!(other instanceof MapEntry<?, ?>)) return false;
+    if (!(other instanceof MapEntry<?, ?>))
+      return false;
 
     MapEntry<?, ?> rhs = (MapEntry<?, ?>) other;
 
