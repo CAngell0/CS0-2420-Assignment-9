@@ -1,11 +1,37 @@
 package timing;
 
 import java.util.List;
+import java.util.Random;
+
+import assign09.StudentGoodHash;
 
 public class StudentGoodHashTimingExperiment extends TimingExperiment {
+    private Random random = new Random();
 
     public StudentGoodHashTimingExperiment(String problemSizeName, List<Integer> problemSizes, int iterationCount) {
         super(problemSizeName, problemSizes, iterationCount);
+    }
+
+     /**
+     * A helper method that creates a random student hash object
+     * @return
+     */
+    private StudentGoodHash generateRandomStudent(){
+        //Creates a random uid
+        int uid = random.nextInt(99999999);
+        String firstName = "";
+        String lastName = "";
+
+        //Creates a randomized first name and last name by creating random, 6 character long strings
+        StringBuilder firstNameBuilder = new StringBuilder();
+        StringBuilder lastNameBuilder = new StringBuilder();
+        for (int i = 0; i < 5; i++) firstNameBuilder.append((char) random.nextInt(26) + 'a');
+        for (int i = 0; i < 5; i++) lastNameBuilder.append((char) random.nextInt(26) + 'a');
+
+        firstName = firstNameBuilder.toString();
+        lastName = lastNameBuilder.toString();
+
+        return new StudentGoodHash(uid, firstName, lastName);
     }
 
     @Override
