@@ -2,6 +2,7 @@ package assign09;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * A hashtable data structure that implements the map interface.
  * 
@@ -18,7 +19,7 @@ public class HashTable<K, V> implements Map<K, V> {
     /** {@inheritDoc} */
     @Override
     public void clear() {
-        //Reinitializes the backing and deletion arrays, along with the size.
+        // Reinitializes the backing and deletion arrays, along with the size.
         array = new Object[capacity];
         deleted = new boolean[capacity];
         size = 0;
@@ -29,9 +30,9 @@ public class HashTable<K, V> implements Map<K, V> {
     public boolean containsKey(K key) {
         int i = 0;
 
-        //if we increments capacity times then its not in the list
+        // if we increments capacity times then its not in the list
         while (i < capacity) {
-            //Gets the index of where the key is suppoed to be
+            // Gets the index of where the key is suppoed to be
             int j = calcIndex(key, i);
             Object curr = array[j];
 
@@ -133,7 +134,7 @@ public class HashTable<K, V> implements Map<K, V> {
         // Create a new map entry from the key and value.
         MapEntry<K, V> toBePut = new MapEntry<>(key, value);
 
-        //stores first tombstone(deleted is true)
+        // stores first tombstone(deleted is true)
         int firstTombstone = -1;
         int i = 0;
 
@@ -155,15 +156,16 @@ public class HashTable<K, V> implements Map<K, V> {
 
             // If the current item is not empty...
             if (!deleted[j]) {
-                //If the keys are equal, overwrite it and return the value. If not, keep probing
+                // If the keys are equal, overwrite it and return the value. If not, keep
+                // probing
                 MapEntry<K, V> entry = toEntry(curr);
                 if (entry.getKey().equals(key)) {
                     V toReturn = entry.getValue();
                     array[j] = toBePut;
                     return toReturn;
                 }
-            
-            // If the current item was soft deleted
+
+                // If the current item was soft deleted
             } else {
                 // Remember the index of the first tombstone, if there hasn't been one already
                 if (firstTombstone == -1) {
@@ -217,6 +219,7 @@ public class HashTable<K, V> implements Map<K, V> {
 
     /**
      * A helper method that casts an Object from the backing array to a MapEntry.
+     * 
      * @param entry The object to cast
      * @return
      */
@@ -225,19 +228,29 @@ public class HashTable<K, V> implements Map<K, V> {
         return (MapEntry<K, V>) entry;
     }
 
+    /**
+     * A helper method that calculates the load factor of the data structure with
+     * its durrent data.
+     * 
+     * @return The load factor: size / capacity
+     */
     private double calculateLoadFactor() {
         return (double) size / capacity;
     }
 
     /**
-     * A helper method that takes a key and calculates a corresponding index for the backing array.
+     * A helper method that takes a key and calculates a corresponding index for the
+     * backing array.
      * 
-     * It first hashes it with the built in hashCode() method. Then it modulos by the backing array capacity.
-     * This method also implements quadratic probing. By putting in a step, it will calculate it to the index at that step
+     * It first hashes it with the built in hashCode() method. Then it modulos by
+     * the backing array capacity.
+     * This method also implements quadratic probing. By putting in a step, it will
+     * calculate it to the index at that step
      * using this paradigm.
      * 
-     * @param key The key to create the index from
-     * @param step How many steps to take along the quadratic probing. Put 0 for the starting index.
+     * @param key  The key to create the index from
+     * @param step How many steps to take along the quadratic probing. Put 0 for the
+     *             starting index.
      * @return
      */
     private int calcIndex(K key, int step) {
@@ -246,8 +259,11 @@ public class HashTable<K, V> implements Map<K, V> {
     }
 
     /**
-     * A helper method that calculates what the next capacity of the backing array should be.
-     * This method is used in resizing to decide how big the array should be resized to.
+     * A helper method that calculates what the next capacity of the backing array
+     * should be.
+     * This method is used in resizing to decide how big the array should be resized
+     * to.
+     * 
      * @return
      */
     private int calculateNextCapacity() {
@@ -265,7 +281,9 @@ public class HashTable<K, V> implements Map<K, V> {
     }
 
     /**
-     * A simple helper method that checks whether a inputted integer is a prime number.
+     * A simple helper method that checks whether a inputted integer is a prime
+     * number.
+     * 
      * @param num The number to check.
      * @return Whether or not the number is prime.
      */
@@ -281,7 +299,8 @@ public class HashTable<K, V> implements Map<K, V> {
     }
 
     /**
-     * A helper method that resizes the backing array. It will resize the capacity to the next
+     * A helper method that resizes the backing array. It will resize the capacity
+     * to the next
      * prime number after it's doubled previous capacity.
      */
     private void resizeBackingArray() {
@@ -292,13 +311,14 @@ public class HashTable<K, V> implements Map<K, V> {
         // Grabs references to the old backing data
         Object[] oldArr = array;
         boolean[] oldDeleted = deleted;
-        
+
         // Resets the backing arrays and size
         clear();
 
         // Iterates through the old backing array...
         for (int i = 0; i < oldArr.length; i++) {
-            // If the current item is not empty or deleted, rehash it to the new backing array
+            // If the current item is not empty or deleted, rehash it to the new backing
+            // array
             if (oldArr[i] != null && !oldDeleted[i]) {
                 MapEntry<K, V> entry = toEntry(oldArr[i]);
                 put(entry.getKey(), entry.getValue());
