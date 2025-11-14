@@ -27,7 +27,6 @@ public class StudentBadHashTimingExperiment extends TimingExperiment {
     public static void main(String[] args) {
         int warmup = 25;
         int iterationCount = 100;
-        // List<Integer> problemSizes = buildProblemSizes(100000, 10000, 200);
         List<Integer> problemSizes = buildProblemSizes(100000, 10000, 40);
 
         TimingExperiment experiment = new StudentBadHashTimingExperiment("studentAmount", problemSizes, iterationCount);
