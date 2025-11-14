@@ -2,12 +2,10 @@ package assign09;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 /**
- * A hash table data structure used to store key-value pairs. 
+ * A hashtable data structure that implements the map interface.
  * 
- * @author CS 2420 course staff and Joshua Varughese and Carson Angell
+ * @author Joshua Varughese and Carson Angell
  * @version 11/13/25
  */
 public class HashTable<K, V> implements Map<K, V> {
@@ -31,6 +29,7 @@ public class HashTable<K, V> implements Map<K, V> {
     public boolean containsKey(K key) {
         int i = 0;
 
+        //if we increments capacity times then its not in the list
         while (i < capacity) {
             //Gets the index of where the key is suppoed to be
             int j = calcIndex(key, i);
@@ -134,6 +133,7 @@ public class HashTable<K, V> implements Map<K, V> {
         // Create a new map entry from the key and value.
         MapEntry<K, V> toBePut = new MapEntry<>(key, value);
 
+        //stores first tombstone(deleted is true)
         int firstTombstone = -1;
         int i = 0;
 

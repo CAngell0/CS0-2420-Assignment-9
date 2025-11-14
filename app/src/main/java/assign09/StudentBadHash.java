@@ -80,7 +80,9 @@ public class StudentBadHash {
     DecimalFormat formatter = new DecimalFormat("0000000");
     return firstName + " " + lastName + " (u" + formatter.format(uid) + ")";
   }
-
+  /**
+   * Hashes the students first name
+   */
   public int hashCode() {
     return this.getFirstName().hashCode();
   }

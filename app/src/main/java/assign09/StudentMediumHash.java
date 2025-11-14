@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
  * Representation for a University of Utah student.
  *
  * @implNote The hashCode method is overridden with a valid hash function for
- * this student, but one that does a poor job of distributing students in a hash
+ * this student, but one that does a medium job of distributing students in a hash
  * table.
  *
  * @author CS 2420 course staff and Joshua Varughese and Carson Angell
@@ -80,7 +80,9 @@ public class StudentMediumHash {
     DecimalFormat formatter = new DecimalFormat("0000000");
     return firstName + " " + lastName + " (u" + formatter.format(uid) + ")";
   }
-
+  /**
+   * Hashes students first and last name
+   */
   public int hashCode() {
     String fullName = this.getFirstName() + this.getLastName();
     return fullName.hashCode();
