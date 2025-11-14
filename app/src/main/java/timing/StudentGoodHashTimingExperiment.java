@@ -29,7 +29,7 @@ public class StudentGoodHashTimingExperiment extends TimingExperiment {
         int iterationCount = 100;
         List<Integer> problemSizes = buildProblemSizes(100000, 10000, 40);
 
-        TimingExperiment experiment = new StudentGoodHashTimingExperiment("studentAmount", problemSizes, iterationCount);
+        TimingExperiment experiment = new StudentGoodHashTimingExperiment("number_of_students_to_add", problemSizes, iterationCount);
 
         experiment.warmup(warmup);
         experiment.run();
