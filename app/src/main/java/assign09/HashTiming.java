@@ -6,7 +6,7 @@ import timing.TimingExperiment;
 
 public class HashTiming {
     public static void main(String[] args) {
-        List<Integer> sizes = TimingExperiment.buildProblemSizes(10_000, 10_000, 10);
+        List<Integer> sizes = TimingExperiment.buildProblemSizes(10000, 10000, 10);
 
         int iterations = 50;
 
