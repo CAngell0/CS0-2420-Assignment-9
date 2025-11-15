@@ -26,7 +26,7 @@ public class CustomContainsValueTimingExperiment extends TimingExperiment {
     public static void main(String[] args) {
         int warmup = 25;
         int iterationCount = 50;
-        List<Integer> problemSizes = buildProblemSizes(1000, 1000, 20);
+        List<Integer> problemSizes = buildProblemSizes(1000, 1000, 40);
 
         TimingExperiment experiment = new CustomContainsValueTimingExperiment("number_of_values_to_check", problemSizes, iterationCount);
         experiment.warmup(warmup);

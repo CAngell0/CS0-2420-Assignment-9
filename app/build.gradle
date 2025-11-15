@@ -39,7 +39,7 @@ application {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'timing.CustomContainsValueTimingExperiment'
+        attributes 'Main-Class': 'timing.StudentGoodHashTimingExperiment'
     }
 }
 
